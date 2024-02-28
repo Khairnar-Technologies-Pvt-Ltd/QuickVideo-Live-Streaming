@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>QuickVideo Live Streaming</title>
+  <!-- added google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    .peerConnectionState-new {
+      color: cornflowerblue;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .peerConnectionState-connecting {
+      color: orange;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .peerConnectionState-connected {
+      color: green;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .peerConnectionState-disconnected,
+    .peerConnectionState-closed,
+    .peerConnectionState-failed {
+      color: red;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .iceConnectionState-new {
+      color: cornflowerblue;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .iceConnectionState-checking {
+      color: orange;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .iceConnectionState-connected,
+    .iceConnectionState-completed {
+      color: green;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .peerConnectionState-disconnected,
+    .peerConnectionState-closed,
+    .peerConnectionState-failed {
+      color: red;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .iceGatheringState-new {
+      color: cornflowerblue;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .iceGatheringState-gathering {
+      color: orange;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .iceGatheringState-complete {
+      color: black;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .signalingState-stable {
+      color: green;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .signalingState-have-local-offer,
+    .signalingState-have-remote-offer,
+    .signalingState-have-local-pranswer,
+    .signalingState-have-remote-pranswer {
+      color: cornflowerblue;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .signalingState-closed {
+      color: red;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .streamingState-streaming {
+      color: green;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    .streamingState-empty {
+      color: grey;
+      background: transparent;
+      padding: 0 10px
+    }
+
+    /* added css from here */
+
+    body {
+      font-family: 'Mulish', sans-serif;
+      text-align: center;
+      background: url(./body-background.png);
+      background-color: black;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+      padding: 0;
+      margin: 0;
+    }
+
+    #banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #banner img {
+      padding: 0 0 0 20px;
+    }
+
+    #banner h2 {
+      color: #fff;
+      padding: 0 20px 0 0;
+    }
+
+    #content {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+    }
+
+    #buttons {
+      clear: both;
+      padding: 70px 0 0 0;
+      text-align: center;
+      background: transparent;
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+      margin: 0 5px;
+      background-color: #fff;
+      color: #000;
+    }
+
+    button:hover {
+      background: #000;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+      color: #fff;
+    }
+
+    #status {
+      clear: both;
+      padding: 20px 0 0 0;
+      text-align: left;
+      display: inline-block;
+      zoom: 1;
+      line-height: 140%;
+      font-size: 15px;
+      color: #fff;
+      background: transparent;
+      text-align: center;
+    }
+
+    #status div {
+      padding-bottom: 10px;
+    }
+
+    #video-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #video-wrapper div {
+      padding: 50px 0 0 0;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video {
+      display: block;
+      border-radius: 50%;
+      background-color: #fff;
+      width: 300px;
+      height: 300px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- added "id=content" -->
+  <div id="content">
+    <!-- added "id=banner" -->
+    <div id="banner">
+      <img src="./Logo.svg" alt="logo" width="200px">
+      <h2>QuickVideo Live Streaming</h2>
+    </div>
+    <!-- added "id=video-wrapper" -->
+    <div id="video-wrapper">
+      <div>
+        <video id="talk-video" width="400" height="400" autoplay></video>
+      </div>
+    </div>
+    <br />
+
+    <!-- added div#buttons -->
+    <div id="buttons">
+      <button id="connect-button" type="button">Connect</button>
+      <button id="talk-button" type="button">Start</button>
+      <button id="destroy-button" type="button">Destroy</button>
+    </div>
+
+    <!-- added div#status -->
+    <div id="status">
+      <!-- removed the wrapping <div> tags -->
+      ICE gathering status: <label id="ice-gathering-status-label"></label><br />
+      ICE status: <label id="ice-status-label"></label><br />
+      Peer connection status: <label id="peer-status-label"></label><br />
+      Signaling status: <label id="signaling-status-label"></label><br />
+      Streaming status: <label id="streaming-status-label"></label><br />
+    </div>
+  </div>
+
+  <script type="module" src="./index.js"></script>
+</body>
+
+</html>
