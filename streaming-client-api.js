@@ -17,6 +17,7 @@ let sessionClientAnswer;
 let statsIntervalId;
 let videoIsPlaying;
 let lastBytesReceived;
+let isListening = false;
 let text = '';
 
 const micButton = document.getElementById('mic-button');
@@ -158,6 +159,7 @@ connectButton.onclick = async () => {
   try {
     sessionClientAnswer = await createPeerConnection(offer, iceServers);
     inputField.style.display = 'flex';
+    connectButton.classList.add('disabled');
     talkButton.classList.remove('disabled');
     destroyButton.classList.remove('disabled');
   } catch (e) {
@@ -214,6 +216,7 @@ destroyButton.onclick = async () => {
     body: JSON.stringify({ session_id: sessionId }),
   });
   inputField.style.display = 'none';
+  connectButton.classList.remove('disabled');
   talkButton.classList.add('disabled');
   destroyButton.classList.add('disabled');
   stopAllStreams();
