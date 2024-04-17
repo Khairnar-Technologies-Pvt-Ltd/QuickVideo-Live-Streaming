@@ -7,8 +7,65 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap" rel="stylesheet" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
+    #input-field {
+      margin-top: 20px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      display: none;
+    }
+
+    #input-field input {
+      width: 300px; 
+      height: 30px; 
+      font-size: 18px; 
+      padding: 5px 15px; 
+      border-radius: 10px; 
+      outline: none;
+      border: 1px solid #fff;
+    }
+
+    #send-button {
+      filter: invert(1); 
+      margin-left: 10px; 
+      cursor: pointer;
+    }
+
+    #mic-button {
+      color: #fff; 
+      margin-left: 10px; 
+      cursor: pointer;
+    }
+    
+    #mic-stop-button {
+      color: #fff; 
+      margin-left: 10px; 
+      cursor: pointer;
+      display: none;
+    }
+
+    .disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    
+    .statusIndicator-stopped {
+      color: red;
+      background: transparent;
+      padding: 0 10px
+    }
+    
+    .statusIndicator-playing {
+      color: green;
+      background: transparent;
+      padding: 0 10px
+    }
+
     .peerConnectionState-new {
       color: cornflowerblue;
       background: transparent;
@@ -236,6 +293,14 @@
       <button id="connect-button" type="button">Connect</button>
       <button id="talk-button" type="button">Start</button>
       <button id="destroy-button" type="button">Destroy</button>
+      <!-- <button id="toggle-button" type="button">Pause</button> -->
+    </div>
+
+    <div id="input-field">
+      <input type="text" id="text-input">
+      <img id="send-button" src="./send.png" alt="send" width="20px">
+      <i id="mic-button" class="fa-solid fa-microphone"></i>
+      <i id="mic-stop-button" class="fa-solid fa-stop"></i>
     </div>
 
     <!-- added div#status -->
@@ -246,6 +311,7 @@
       Peer connection status: <label id="peer-status-label"></label><br />
       Signaling status: <label id="signaling-status-label"></label><br />
       Streaming status: <label id="streaming-status-label"></label><br />
+      Audio status: <label id="status-indicator"></label>
     </div>
   </div>
 
