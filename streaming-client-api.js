@@ -1,5 +1,5 @@
 'use strict';
-import QUICKVIDEO_API from './api.json' assert { type: 'json' };
+import QUICKVIDEO_API from './api.json' with { type: 'json' };
 
 if (QUICKVIDEO_API.key == '🤫') alert('Please put your api key inside ./api.json and restart..');
 
