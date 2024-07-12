@@ -1,4 +1,5 @@
 {
     "key": "enter your api here",
-    "url": "https://api.quickvideo.ai/v1"
+    "url": "https://api.quickvideo.ai/v1",
+    "type": "clips"
 }

@@ -133,6 +133,10 @@ const destroyButton = document.getElementById('destroy-button');
 talkButton.classList.add('disabled');
 destroyButton.classList.add('disabled');
 
+const bodyData = QUICKVIDEO_API.type === 'clips' 
+  ? { presenter_id: "fiona-Fi5YDeh1YS" } 
+  : { source_url: "https://quickvideo.blob.core.windows.net/quickvideo/presenters/image/7bfe9e.png" };
+
 connectButton.onclick = async () => {
   if (peerConnection && peerConnection.connectionState === 'connected') {
     return;
@@ -141,15 +145,13 @@ connectButton.onclick = async () => {
   stopAllStreams();
   closePC();
 
-  const sessionResponse = await fetchWithRetries(`${QUICKVIDEO_API.url}/clips/streams`, {
+  const sessionResponse = await fetchWithRetries(`${QUICKVIDEO_API.url}/${QUICKVIDEO_API.type}/streams`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${QUICKVIDEO_API.key}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      presenter_id: "fiona-Fi5YDeh1YS"
-    }),
+    body: JSON.stringify(bodyData),
   });
 
   const { id: newStreamId, offer, ice_servers: iceServers, session_id: newSessionId } = await sessionResponse.json();
@@ -170,7 +172,7 @@ connectButton.onclick = async () => {
   }
   console.log("sessionClientAnswer",sessionClientAnswer);
 
-  const sdpResponse = await fetch(`${QUICKVIDEO_API.url}/clips/streams/${streamId}/sdp`, {
+  const sdpResponse = await fetch(`${QUICKVIDEO_API.url}/${QUICKVIDEO_API.type}/streams/${streamId}/sdp`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${QUICKVIDEO_API.key}`,
@@ -185,7 +187,7 @@ connectButton.onclick = async () => {
 
 talkButton.onclick = async () => {
   if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
-    const talkResponse = await fetchWithRetries(`${QUICKVIDEO_API.url}/clips/streams/${streamId}`, {
+    const talkResponse = await fetchWithRetries(`${QUICKVIDEO_API.url}/${QUICKVIDEO_API.type}/streams/${streamId}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${QUICKVIDEO_API.key}`,
@@ -208,7 +210,7 @@ talkButton.onclick = async () => {
 };
 
 destroyButton.onclick = async () => {
-  await fetch(`${QUICKVIDEO_API.url}/clips/streams/${streamId}`, {
+  await fetch(`${QUICKVIDEO_API.url}/${QUICKVIDEO_API.type}/streams/${streamId}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${QUICKVIDEO_API.key}`,
@@ -233,7 +235,7 @@ function onIceCandidate(event) {
   if (event.candidate) {
     const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
 
-    fetch(`${QUICKVIDEO_API.url}/clips/streams/${streamId}/ice`, {
+    fetch(`${QUICKVIDEO_API.url}/${QUICKVIDEO_API.type}/streams/${streamId}/ice`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${QUICKVIDEO_API.key}`,
