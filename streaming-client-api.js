@@ -141,14 +141,14 @@ connectButton.onclick = async () => {
   stopAllStreams();
   closePC();
 
-  const sessionResponse = await fetchWithRetries(`${QUICKVIDEO_API.url}/talks/streams`, {
+  const sessionResponse = await fetchWithRetries(`${QUICKVIDEO_API.url}/clips/streams`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${QUICKVIDEO_API.key}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      source_url: 'https://quickvideo.blob.core.windows.net/quickvideo/ai_bot/37.png',
+      presenter_id: "fiona-Fi5YDeh1YS"
     }),
   });
 
@@ -170,7 +170,7 @@ connectButton.onclick = async () => {
   }
   console.log("sessionClientAnswer",sessionClientAnswer);
 
-  const sdpResponse = await fetch(`${QUICKVIDEO_API.url}/talks/streams/${streamId}/sdp`, {
+  const sdpResponse = await fetch(`${QUICKVIDEO_API.url}/clips/streams/${streamId}/sdp`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${QUICKVIDEO_API.key}`,
@@ -185,7 +185,7 @@ connectButton.onclick = async () => {
 
 talkButton.onclick = async () => {
   if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
-    const talkResponse = await fetchWithRetries(`${QUICKVIDEO_API.url}/talks/streams/${streamId}`, {
+    const talkResponse = await fetchWithRetries(`${QUICKVIDEO_API.url}/clips/streams/${streamId}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${QUICKVIDEO_API.key}`,
@@ -196,6 +196,7 @@ talkButton.onclick = async () => {
           type: 'audio',
           audio_url: 'https://quickvideo.blob.core.windows.net/quickvideo/generated_audios/ae78_audio.mp3',
         },
+        color: '#ffffff',
         driver_url: 'bank://lively/',
         config: {
           stitch: true,
@@ -207,7 +208,7 @@ talkButton.onclick = async () => {
 };
 
 destroyButton.onclick = async () => {
-  await fetch(`${QUICKVIDEO_API.url}/talks/streams/${streamId}`, {
+  await fetch(`${QUICKVIDEO_API.url}/clips/streams/${streamId}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${QUICKVIDEO_API.key}`,
@@ -232,7 +233,7 @@ function onIceCandidate(event) {
   if (event.candidate) {
     const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
 
-    fetch(`${QUICKVIDEO_API.url}/talks/streams/${streamId}/ice`, {
+    fetch(`${QUICKVIDEO_API.url}/clips/streams/${streamId}/ice`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${QUICKVIDEO_API.key}`,
@@ -340,7 +341,7 @@ function setVideoElement(stream) {
 
 function playIdleVideo() {
   talkVideo.srcObject = undefined;
-  talkVideo.src = 'or_idle.mp4';
+  talkVideo.src = 'https://quickvideo.blob.core.windows.net/quickvideo/presenters/preview/6cec09.mp4';
   talkVideo.loop = true;
   statusIndicator.innerText = 'stopped';
   statusIndicator.className = 'statusIndicator-stopped'
